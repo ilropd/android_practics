@@ -1,7 +1,7 @@
 package com.itb.postapp.network
 
 import android.util.Log
-import com.itb.postapp.data.model.Post
+import com.itb.postapp.data.model.PostEntity
 import com.itb.postapp.network.PostsApiService.Companion.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,7 +13,9 @@ import kotlinx.serialization.json.Json
 
 interface PostsApiService {
 
-     suspend fun getPosts(): List<Post>
+     suspend fun getPosts(): List<PostEntity>
+
+     suspend fun getPostById(postId: Int): PostEntity?
 
      companion object {
 
@@ -38,12 +40,21 @@ interface PostsApiService {
 
 class PostsApiServiceImpl(private val client: HttpClient) : PostsApiService {
 
-    override suspend fun getPosts(): List<Post> {
+    override suspend fun getPosts(): List<PostEntity> {
         return try {
             client.get("$BASE_URL/posts").body()
         } catch (e: Exception) {
             Log.e("PostsApiService", "Error in getPosts", e)
             emptyList()
+        }
+    }
+
+    override suspend fun getPostById(postId: Int): PostEntity? {
+        return try {
+            client.get("$BASE_URL/posts/$postId").body()
+        } catch (e: Exception) {
+            Log.e("PostsApiService", "Error in getPostById", e)
+            null
         }
     }
 }
