@@ -11,13 +11,8 @@ class PostApplication : Application() {
         super.onCreate()
 
         startKoin {
-            val androidContext = androidContext(this@PostApplication)
-            modules(
-                listOf(
-                    appModule,
-                    dataModule
-                )
-            )
+            androidContext(this@PostApplication)
+            modules(appModule, dataModule)
         }
     }
 }

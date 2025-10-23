@@ -41,20 +41,10 @@ interface PostsApiService {
 class PostsApiServiceImpl(private val client: HttpClient) : PostsApiService {
 
     override suspend fun getPosts(): List<PostEntity> {
-        return try {
-            client.get("$BASE_URL/posts").body()
-        } catch (e: Exception) {
-            Log.e("PostsApiService", "Error in getPosts", e)
-            emptyList()
-        }
+        return client.get("$BASE_URL/posts").body()
     }
 
     override suspend fun getPostById(postId: Int): PostEntity? {
-        return try {
-            client.get("$BASE_URL/posts/$postId").body()
-        } catch (e: Exception) {
-            Log.e("PostsApiService", "Error in getPostById", e)
-            null
-        }
+        return client.get("$BASE_URL/posts/$postId").body()
     }
 }

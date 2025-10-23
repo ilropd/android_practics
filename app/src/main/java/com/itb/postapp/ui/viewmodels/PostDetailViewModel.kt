@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import androidx.lifecycle.SavedStateHandle
 
 sealed class PostDetailUiState {
     object Loading : PostDetailUiState()
@@ -35,7 +36,7 @@ class PostDetailViewModel(
         }
 
         viewModelScope.launch {
-            try { repository.refreshPosts(postId) }
+            try { repository.refreshPosts() }
             catch (_: Exception) { _uiState.value = PostDetailUiState.Offline("Offline") }
         }
     }

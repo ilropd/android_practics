@@ -18,20 +18,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PostApp()
-        }
-    }
-}
-
-@Composable
-fun PostApp() {
-    PostAppTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val navController = rememberNavController()
-            AppNavHost(navController = navController)
+            PostAppTheme{
+                val navController = rememberNavController()
+                AppNavHost(navController = navController)
+            }
         }
     }
 }

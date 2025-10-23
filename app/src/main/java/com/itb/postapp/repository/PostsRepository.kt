@@ -24,34 +24,30 @@ class PostsRepositoryImpl(
         dao.getAllPosts().map { list -> list.map { it.toDomain() } }
 
     override suspend fun refreshPosts() {
-        try {
-            val postsDto = apiService.getPosts()
-            val entities = postsDto.map {
-                PostEntity(
-                    id = it.id,
-                    userId = it.userId,
-                    title = it.title,
-                    body = it.body
-                )
-            }
-            dao.insertPosts(entities)
-        } catch (_: Exception) {}
+        val postsDto = apiService.getPosts()
+        val entities = postsDto.map {
+            PostEntity(
+                id = it.id,
+                userId = it.userId,
+                title = it.title,
+                body = it.body
+            )
+        }
+        dao.insertPosts(entities)
     }
 
     override fun getPostById(postId: Int): Flow<Post?> =
         dao.getPostById(postId).map { it?.toDomain() }
 
     override suspend fun refreshPostById(postId: Int) {
-        try {
-            val dto = apiService.getPostById(postId)
-            val entity = PostEntity(
-                id = dto!!.id,
-                userId = dto.userId,
-                title = dto.title,
-                body = dto.body
-            )
-            dao.insertPosts(listOf(entity))
-        } catch (_: Exception) {}
+        val dto = apiService.getPostById(postId)
+        val entity = PostEntity(
+            id = dto!!.id,
+            userId = dto.userId,
+            title = dto.title,
+            body = dto.body
+        )
+        dao.insertPosts(listOf(entity))
     }
 
     private fun PostEntity.toDomain(): Post = Post(
