@@ -1,4 +1,4 @@
-package com.itb.postapp.ui
+package com.itb.postapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -17,6 +17,6 @@ fun AppNavHost(navController: NavHostController) {
         composable(
             "postDetail/{postId}",
             arguments = listOf(navArgument("postId") { type = NavType.IntType })
-        ) { PostDetailScreen() }
+        ) { PostDetailScreen(navController = navController) }
     }
 }

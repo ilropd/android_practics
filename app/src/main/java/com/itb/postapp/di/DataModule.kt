@@ -38,6 +38,6 @@ val dataModule = module {
 
     single<PostsRepository> { PostsRepositoryImpl(get(), get()) }
 
-    viewModel { PostListViewModel(get()) }
-    viewModel { PostDetailViewModel(get(), get()) }
+    viewModel { PostListViewModel(get(), get()) }
+    viewModel { PostDetailViewModel(get(), get(), get()) }
 }

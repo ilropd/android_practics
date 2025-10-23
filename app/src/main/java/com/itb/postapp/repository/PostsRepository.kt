@@ -11,7 +11,7 @@ interface PostsRepository {
     fun getPosts(): Flow<List<Post>>
     suspend fun refreshPosts()
 
-    fun getPostById(postId: Int): Flow<Post?>
+    fun getById(postId: Int): Flow<Post?>
     suspend fun refreshPostById(postId: Int)
 }
 
@@ -21,7 +21,7 @@ class PostsRepositoryImpl(
 ) : PostsRepository {
 
     override fun getPosts(): Flow<List<Post>> =
-        dao.getAllPosts().map { list -> list.map { it.toDomain() } }
+        dao.getAll().map { list -> list.map { it.toDomain() } }
 
     override suspend fun refreshPosts() {
         val postsDto = apiService.getPosts()
@@ -33,21 +33,23 @@ class PostsRepositoryImpl(
                 body = it.body
             )
         }
-        dao.insertPosts(entities)
+        dao.upsertAll(entities)
     }
 
-    override fun getPostById(postId: Int): Flow<Post?> =
-        dao.getPostById(postId).map { it?.toDomain() }
+    override fun getById(postId: Int): Flow<Post?> =
+        dao.getById(postId).map { it?.toDomain() }
 
     override suspend fun refreshPostById(postId: Int) {
-        val dto = apiService.getPostById(postId)
-        val entity = PostEntity(
-            id = dto!!.id,
-            userId = dto.userId,
-            title = dto.title,
-            body = dto.body
-        )
-        dao.insertPosts(listOf(entity))
+        val dto = apiService.getById(postId)
+        dto?.let {
+            val entity = PostEntity(
+                id = dto.id,
+                userId = dto.userId,
+                title = dto.title,
+                body = dto.body
+            )
+            dao.upsertAll(listOf(entity))
+        }
     }
 
     private fun PostEntity.toDomain(): Post = Post(

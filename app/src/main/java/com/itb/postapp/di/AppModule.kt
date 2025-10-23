@@ -7,6 +7,13 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { PostListViewModel(get()) }
-    viewModel { (handle: SavedStateHandle) -> PostDetailViewModel(get(), handle) }
+    viewModel { PostListViewModel(
+        get(),
+        get()) }
+
+    viewModel { (handle: SavedStateHandle) ->
+        PostDetailViewModel(
+        get(),
+        get(),
+        handle) }
 }

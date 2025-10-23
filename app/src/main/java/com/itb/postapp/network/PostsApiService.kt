@@ -15,7 +15,7 @@ interface PostsApiService {
 
      suspend fun getPosts(): List<PostEntity>
 
-     suspend fun getPostById(postId: Int): PostEntity?
+     suspend fun getById(postId: Int): PostEntity?
 
      companion object {
 
@@ -44,7 +44,7 @@ class PostsApiServiceImpl(private val client: HttpClient) : PostsApiService {
         return client.get("$BASE_URL/posts").body()
     }
 
-    override suspend fun getPostById(postId: Int): PostEntity? {
+    override suspend fun getById(postId: Int): PostEntity? {
         return client.get("$BASE_URL/posts/$postId").body()
     }
 }

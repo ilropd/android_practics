@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import androidx.lifecycle.SavedStateHandle
+import com.itb.postapp.domain.getByIdUseCase
+import com.itb.postapp.domain.RefreshPostByIdUseCase
 
 sealed class PostDetailUiState {
     object Loading : PostDetailUiState()
@@ -19,7 +21,8 @@ sealed class PostDetailUiState {
 }
 
 class PostDetailViewModel(
-    private val repository: PostsRepository,
+    private val getByIdUseCase: getByIdUseCase,
+    private val refreshPostByIdUseCase: RefreshPostByIdUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -30,13 +33,13 @@ class PostDetailViewModel(
 
     init {
         viewModelScope.launch {
-            repository.getPostById(postId)
+            getByIdUseCase.execute(postId)
                 .catch { _uiState.value = PostDetailUiState.Error(it.message ?: "Error") }
                 .collect { it?.let { _uiState.value = PostDetailUiState.Success(it) } }
         }
 
         viewModelScope.launch {
-            try { repository.refreshPosts() }
+            try { refreshPostByIdUseCase.execute(postId) }
             catch (_: Exception) { _uiState.value = PostDetailUiState.Offline("Offline") }
         }
     }
