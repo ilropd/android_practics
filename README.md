@@ -79,6 +79,46 @@ graph TB;
         direction TB
         Repository -- "Fetches/Saves" --> ApiService["Remote API (Ktor)"];
         Repository -- "Fetches/Saves" --> Database["Local DB (Room)"];
-        ApiService -- "Updates" --> Database;
-    end
+        graph TB
+
+%% ==== UI LAYER ====
+subgraph "🎨 UI Layer (Jetpack Compose)"
+    direction TB
+    Screen["🖥️ Compose Screen\n(PostList / PostDetail)"]
+    Screen -->|User Actions\n(e.g. onClick, refresh)| ViewModel
+    ViewModel -->|UI State\n(StateFlow<PostUiState>)| Screen
+end
+
+%% ==== DOMAIN / VIEWMODEL LAYER ====
+subgraph "🧠 ViewModel / Domain Layer"
+    direction TB
+    ViewModel["📦 ViewModel (MVVM)\nHolds state + business logic"]
+    ViewModel -->|Requests Data / Triggers Refresh| Repository
+    Repository -->|Returns Domain Models\n(via Flow / suspend)| ViewModel
+end
+
+%% ==== DATA LAYER ====
+subgraph "💾 Data Layer"
+    direction TB
+    Repository["📚 Repository\n(Single source of truth)"]
+
+    ApiService["🌐 ApiService (Ktor)\nRemote source: /posts, /posts/{id}"]
+    Database["🗄️ Room Database\nLocal cache (PostDao)"]
+
+    Repository -->|Fetch / Save| ApiService
+    Repository -->|Read / Write| Database
+
+    ApiService -->|Network Response\n(PostDto)| Repository
+    Database -->|Local Data Flow\n(PostEntity)| Repository
+end
+
+%% ==== RELATION BETWEEN REMOTE AND LOCAL ====
+ApiService -->|Sync / Cache Updates| Database
+
+%% ==== OPTIONAL FLOW NOTES ====
+classDef layer fill:#f8f9fa,stroke:#d0d0d0,stroke-width:1px,color:#222,font-weight:bold;
+classDef node fill:#ffffff,stroke:#bcbcbc,stroke-width:1px;
+class Screen,ViewModel,Repository,ApiService,Database node;
+class UI,ViewModel,Repository,ApiService,Database layer;
+ApiService -- "Updates" --> Database;
 ```
