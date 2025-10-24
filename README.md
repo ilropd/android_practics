@@ -68,46 +68,41 @@ graph TB
 %% ==== UI LAYER ====
 subgraph "🎨 UI Layer (Jetpack Compose)"
     direction TB
-    Screen["🖥️ Compose Screen\n(PostList / PostDetail)"]
-    Screen -->|User Actions\n(e.g. onClick, refresh)| ViewModel
-    ViewModel -->|UI State\n(StateFlow<PostUiState>)| Screen
+    Screen["🖥️ Compose Screen (PostList / PostDetail)"]
+    Screen -->|"User Actions (e.g. onClick, refresh)"| ViewModel
+    ViewModel -->|"UI State (StateFlow<PostUiState>)"| Screen
 end
 
 %% ==== DOMAIN LAYER ====
 subgraph "🧠 Domain Layer"
     direction TB
-    ViewModel["📦 ViewModel (MVVM)\nHolds UI logic & State"]
-    UseCase["⚙️ UseCase(s)\nEncapsulate business logic:\nGetPostsUseCase, RefreshPostsUseCase, etc."]
-    ViewModel -->|Calls| UseCase
-    UseCase -->|Requests data| Repository
-    Repository -->|Returns Domain Models\n(via Flow / suspend)| UseCase
-    UseCase -->|Domain Models| ViewModel
+    ViewModel["📦 ViewModel (MVVM) - Holds UI logic & State"]
+    UseCase["⚙️ UseCase(s) - Encapsulate business logic: GetPosts, RefreshPosts"]
+    ViewModel -->|"Calls"| UseCase
+    UseCase -->|"Requests data"| Repository
+    Repository -->|"Returns Domain Models (Flow / suspend)"| UseCase
+    UseCase -->|"Domain Models"| ViewModel
 end
 
 %% ==== DATA LAYER ====
 subgraph "💾 Data Layer"
     direction TB
-    Repository["📚 Repository\nSingle Source of Truth"]
+    Repository["📚 Repository - Single Source of Truth"]
 
-    ApiService["🌐 ApiService (Ktor)\nRemote Source:\n/posts, /posts/{id}"]
-    Database["🗄️ Room Database\nLocal Cache (PostDao)"]
+    ApiService["🌐 ApiService (Ktor) - Remote Source: /posts, /posts/{id}"]
+    Database["🗄️ Room Database - Local Cache (PostDao)"]
 
-    Repository -->|Fetch / Save| ApiService
-    Repository -->|Read / Write| Database
+    Repository -->|"Fetch / Save"| ApiService
+    Repository -->|"Read / Write"| Database
 
-    ApiService -->|Network Response\n(PostDto)| Repository
-    Database -->|Local Data Flow\n(PostEntity)| Repository
+    ApiService -->|"Network Response (PostDto)"| Repository
+    Database -->|"Local Data Flow (PostEntity)"| Repository
 end
 
 %% ==== RELATION BETWEEN REMOTE AND LOCAL ====
-ApiService -->|Sync / Cache Updates| Database
+ApiService -->|"Sync / Cache Updates"| Database
 
 %% ==== MAPPINGS ====
 Database -.->|"PostEntity ↔ Post"| Repository
 ApiService -.->|"PostDto ↔ Post"| Repository
-
-%% ==== STYLE ====
-classDef layer fill:#f8f9fa,stroke:#d0d0d0,stroke-width:1px,color:#222,font-weight:bold;
-classDef node fill:#ffffff,stroke:#bcbcbc,stroke-width:1px,font-size:13px;
-class Screen,ViewModel,UseCase,Repository,ApiService,Database node;
 ```
