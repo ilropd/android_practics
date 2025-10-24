@@ -63,23 +63,7 @@ Room database. This ensures the app remains functional even when offline.
 The diagram below illustrates the flow of data and dependencies between the different architectural layers.
 
 ```mermaid
-graph TB;
-    subgraph UI Layer
-        direction TB
-        Screen[Compose Screen] -- "User Action" --> ViewModel;
-        ViewModel -- "State (StateFlow)" --> Screen;
-    end
-
-    subgraph "ViewModel / Domain Layer"
-        direction TB
-        ViewModel -- "Requests data" --> Repository;
-    end
-
-    subgraph Data Layer
-        direction TB
-        Repository -- "Fetches/Saves" --> ApiService["Remote API (Ktor)"];
-        Repository -- "Fetches/Saves" --> Database["Local DB (Room)"];
-        graph TB
+graph TB
 
 %% ==== UI LAYER ====
 subgraph "🎨 UI Layer (Jetpack Compose)"
@@ -89,21 +73,24 @@ subgraph "🎨 UI Layer (Jetpack Compose)"
     ViewModel -->|UI State\n(StateFlow<PostUiState>)| Screen
 end
 
-%% ==== DOMAIN / VIEWMODEL LAYER ====
-subgraph "🧠 ViewModel / Domain Layer"
+%% ==== DOMAIN LAYER ====
+subgraph "🧠 Domain Layer"
     direction TB
-    ViewModel["📦 ViewModel (MVVM)\nHolds state + business logic"]
-    ViewModel -->|Requests Data / Triggers Refresh| Repository
-    Repository -->|Returns Domain Models\n(via Flow / suspend)| ViewModel
+    ViewModel["📦 ViewModel (MVVM)\nHolds UI logic & State"]
+    UseCase["⚙️ UseCase(s)\nEncapsulate business logic:\nGetPostsUseCase, RefreshPostsUseCase, etc."]
+    ViewModel -->|Calls| UseCase
+    UseCase -->|Requests data| Repository
+    Repository -->|Returns Domain Models\n(via Flow / suspend)| UseCase
+    UseCase -->|Domain Models| ViewModel
 end
 
 %% ==== DATA LAYER ====
 subgraph "💾 Data Layer"
     direction TB
-    Repository["📚 Repository\n(Single source of truth)"]
+    Repository["📚 Repository\nSingle Source of Truth"]
 
-    ApiService["🌐 ApiService (Ktor)\nRemote source: /posts, /posts/{id}"]
-    Database["🗄️ Room Database\nLocal cache (PostDao)"]
+    ApiService["🌐 ApiService (Ktor)\nRemote Source:\n/posts, /posts/{id}"]
+    Database["🗄️ Room Database\nLocal Cache (PostDao)"]
 
     Repository -->|Fetch / Save| ApiService
     Repository -->|Read / Write| Database
@@ -115,10 +102,12 @@ end
 %% ==== RELATION BETWEEN REMOTE AND LOCAL ====
 ApiService -->|Sync / Cache Updates| Database
 
-%% ==== OPTIONAL FLOW NOTES ====
+%% ==== MAPPINGS ====
+Database -.->|"PostEntity ↔ Post"| Repository
+ApiService -.->|"PostDto ↔ Post"| Repository
+
+%% ==== STYLE ====
 classDef layer fill:#f8f9fa,stroke:#d0d0d0,stroke-width:1px,color:#222,font-weight:bold;
-classDef node fill:#ffffff,stroke:#bcbcbc,stroke-width:1px;
-class Screen,ViewModel,Repository,ApiService,Database node;
-class UI,ViewModel,Repository,ApiService,Database layer;
-ApiService -- "Updates" --> Database;
+classDef node fill:#ffffff,stroke:#bcbcbc,stroke-width:1px,font-size:13px;
+class Screen,ViewModel,UseCase,Repository,ApiService,Database node;
 ```
