@@ -81,7 +81,4 @@ graph LR;
         Repository -- Fetches/Saves --> Database[Local DB (Room)];
         ApiService -- Updates --> Database;
     end
-
-    UI_Layer --> ViewModel_Domain_Layer;
-    ViewModel_Domain_Layer --> Data_Layer;
 ```
