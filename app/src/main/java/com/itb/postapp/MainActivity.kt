@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.itb.postapp.ui.navigation.AppNavHost
 import com.itb.postapp.ui.theme.PostAppTheme
-import com.itb.postapp.ui.viewmodels.PostListViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -18,23 +18,7 @@ interface PostsApiService {
      suspend fun getById(postId: Int): PostEntity?
 
      companion object {
-
          internal const val BASE_URL = "https://jsonplaceholder.typicode.com"
-         
-         fun create(): PostsApiService {
-             return PostsApiServiceImpl(
-                 client = HttpClient(OkHttp) {
-                     install(ContentNegotiation) {
-                         json(Json {
-                             prettyPrint = true
-                             isLenient = true
-                             ignoreUnknownKeys = true
-                         }
-                         )
-                     }
-                     }
-             )
-         }
      }
  }
 
