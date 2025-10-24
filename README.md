@@ -66,19 +66,19 @@ The diagram below illustrates the flow of data and dependencies between the diff
 graph LR;
     subgraph UI Layer
         direction TB
-        Screen[Compose Screen] -- User Action --> ViewModel;
-        ViewModel -- State (StateFlow) --> Screen;
+        Screen[Compose Screen] -- "User Action" --> ViewModel;
+        ViewModel -- "State (StateFlow)" --> Screen;
     end
 
     subgraph "ViewModel / Domain Layer"
         direction TB
-        ViewModel -- Requests data --> Repository;
+        ViewModel -- "Requests data" --> Repository;
     end
 
     subgraph Data Layer
         direction TB
-        Repository -- Fetches/Saves --> ApiService[Remote API (Ktor)];
-        Repository -- Fetches/Saves --> Database[Local DB (Room)];
-        ApiService -- Updates --> Database;
+        Repository -- "Fetches/Saves" --> ApiService[Remote API (Ktor)];
+        Repository -- "Fetches/Saves" --> Database[Local DB (Room)];
+        ApiService -- "Updates" --> Database;
     end
 ```
