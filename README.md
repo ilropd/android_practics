@@ -63,7 +63,7 @@ Room database. This ensures the app remains functional even when offline.
 The diagram below illustrates the flow of data and dependencies between the different architectural layers.
 
 ```mermaid
-graph LR;
+graph TB;
     subgraph UI Layer
         direction TB
         Screen[Compose Screen] -- "User Action" --> ViewModel;
