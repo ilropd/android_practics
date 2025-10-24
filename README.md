@@ -77,8 +77,8 @@ graph LR;
 
     subgraph Data Layer
         direction TB
-        Repository -- "Fetches/Saves" --> ApiService[Remote API (Ktor)];
-        Repository -- "Fetches/Saves" --> Database[Local DB (Room)];
+        Repository -- "Fetches/Saves" --> ApiService["Remote API (Ktor)"];
+        Repository -- "Fetches/Saves" --> Database["Local DB (Room)"];
         ApiService -- "Updates" --> Database;
     end
 ```
