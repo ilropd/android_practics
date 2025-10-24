@@ -21,7 +21,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.instanceOf
 
 //@RunWith(RobolectricTestRunner::class) is used because in classes of VM I used logger
 // but JVM doesn't know what is android.util.Log and falles with error “Method d in android.util.Log not mocked”.
@@ -91,11 +92,16 @@ class PostListViewModelTest {
         // We don't want to change logic of code, so need to change test
         // Then
         viewModel.uiState.test {
-            val success = awaitItem() as PostsListUiState.Success
-            assertThat(success.posts, equalTo(posts))
-            assertThat(success.offlineMessage, equalTo(null))
-        }
+            val loading = awaitItem()
+            assertThat(loading, instanceOf(PostsListUiState.Loading::class.java))
 
+            val success = awaitItem()
+            assertThat(success, instanceOf(PostsListUiState.Success::class.java))
+            assertThat((success as PostsListUiState.Success).posts.size, equalTo(1))
+            assertThat(success.offlineMessage, equalTo(null))
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test

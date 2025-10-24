@@ -99,5 +99,6 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:3.3.1")
     testImplementation("io.ktor:ktor-client-content-negotiation:3.3.1")
     testImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(kotlin("test"))
 }
